@@ -18,12 +18,16 @@ import com.example.sgpsiindex.model.Response
 abstract class Database : RoomDatabase() {
 
     companion object {
+        var TEST_MODE = false
+
         fun create(context: Context): Database {
-            val databaseBuilder = Room
-                .databaseBuilder(context, Database::class.java, "main.db")
-            return databaseBuilder
-                .fallbackToDestructiveMigration()
-                .build()
+            val databaseBuilder = if (TEST_MODE) {
+                Room.inMemoryDatabaseBuilder(context, Database::class.java).allowMainThreadQueries()
+            } else {
+                Room.databaseBuilder(context, Database::class.java, "main.db").fallbackToDestructiveMigration()
+            }
+
+            return databaseBuilder.build()
         }
     }
 
