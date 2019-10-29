@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">SG PSI Index</string>
+
+    <string name="psi_twenty_four_hourly">24h PSI</string>
+    <string name="pm25_twenty_four_hourly">24h PM2.5</string>
+
+    <string name="good">Good</string>
+    <string name="moderate">Moderate</string>
+    <string name="unhealthy">Unhealthy</string>
+    <string name="very_unhealthy">Very unhealthy</string>
+    <string name="hazardous">Hazardous</string>
+    <string name="unknown">Unknown</string>
+
+    <string name="singapore">Singapore</string>
+
+    <string name="air_quality_forecast">Air Quality Forecast</string>
+    <string name="twenty_four_hour_psi_bracketed">(24hPSI)</string>
+
+    <string name="refresh">Refresh</string>
 </resources>
