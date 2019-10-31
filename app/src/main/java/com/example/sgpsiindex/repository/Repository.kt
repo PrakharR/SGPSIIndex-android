@@ -9,6 +9,9 @@ import com.example.sgpsiindex.model.State
 import retrofit2.Call
 import retrofit2.Callback
 import java.util.concurrent.Executor
+import org.json.JSONObject
+import java.lang.Exception
+
 
 class Repository(
     private val api: Api,
@@ -25,13 +28,21 @@ class Repository(
 
         api.getEnvironmentPsi(dateTime).enqueue(object : Callback<Response> {
             override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                executor.execute {
-                    database.dao().clear()
-                    database.dao().save(response.body()!!)
+                if (response.isSuccessful) {
+                    executor.execute {
+                        database.dao().clear()
+                        database.dao().save(response.body()!!)
 
-                    state.postValue(State.LOADED)
+                        state.postValue(State.LOADED)
+                    }
+                } else {
+                    try {
+                        val jsonObject = JSONObject(response.errorBody()!!.string())
+                        state.value = State.error(jsonObject.getString("message"))
+                    } catch (ignore: Exception) {
+                        state.value = State.error("unknown")
+                    }
                 }
-
             }
 
             override fun onFailure(call: Call<Response>, t: Throwable) {

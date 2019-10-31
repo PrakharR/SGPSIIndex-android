@@ -8,15 +8,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sgpsiindex.api.Api
 import com.example.sgpsiindex.database.Database
-import com.example.sgpsiindex.model.Item
-import com.example.sgpsiindex.model.Region
-import com.example.sgpsiindex.model.Response
+import com.example.sgpsiindex.model.*
 import com.example.sgpsiindex.repository.Repository
 import com.example.sgpsiindex.utility.Utility
 import com.example.sgpsiindex.viewmodel.ViewModel
@@ -116,6 +115,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 updateMarkers(response!!.regions, response.items.first(), it)
             }
         })
+        viewModel.state.observe(this, Observer {
+            when(it.status) {
+                Status.RUNNING -> {}
+                Status.SUCCESS -> {
+                    swipeRefreshLayout.isRefreshing = false
+                }
+                Status.FAILED -> {
+                    swipeRefreshLayout.isRefreshing = false
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     private fun updateUI(response: Response?) {
@@ -134,7 +145,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         updateNationalData(item)
         updateMarkers(regions, item, viewModel.dataType.value!!)
 
-        swipeRefreshLayout.isRefreshing = false
         mainLinearLayout.visibility = View.VISIBLE
     }
 

@@ -1,5 +1,6 @@
 package com.example.sgpsiindex.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.sgpsiindex.model.Response
@@ -10,7 +11,10 @@ import com.example.sgpsiindex.utility.Utility
 class ViewModel(private val repository: Repository) : androidx.lifecycle.ViewModel() {
 
     var response = MediatorLiveData<Response>()
-    var state = MutableLiveData<State>()
+
+    var state = MediatorLiveData<State>()
+    private var stateLiveData: LiveData<State>? = null
+
     var dataType = MutableLiveData<String>(Utility.PSI_TWENTY_FOUR_HOURLY)
 
     init {
@@ -20,7 +24,13 @@ class ViewModel(private val repository: Repository) : androidx.lifecycle.ViewMod
     }
 
     fun refresh(dateTime: String) {
-        repository.refresh(dateTime)
+        if (stateLiveData != null) {
+            state.removeSource(stateLiveData!!)
+        }
+        stateLiveData = repository.refresh(dateTime)
+        state.addSource(stateLiveData!!, {
+            state.value = it
+        })
     }
 
 }
