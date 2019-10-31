@@ -12,7 +12,7 @@ import retrofit2.http.Query
 interface Api {
 
     companion object {
-        const val BASE_URL = "https://api.data.gov.sg/"
+        var BASE_URL = "https://api.data.gov.sg/"
         const val BASE_VERSION = "v1/"
 
         fun create(): Api {
