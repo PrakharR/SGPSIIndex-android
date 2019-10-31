@@ -11,10 +11,19 @@
     <string name="hazardous">Hazardous</string>
     <string name="unknown">Unknown</string>
 
+    <string name="normal">Normal</string>
+    <string name="reduce">Reduce</string>
+    <string name="avoid_prolonged">Avoid prolonged</string>
+    <string name="minimize">Minimize</string>
+
     <string name="singapore">Singapore</string>
 
+    <string name="activity_health_advisory">Health Advisory (Activity)</string>
+    <string name="general_public">General Public</string>
+
     <string name="air_quality_forecast">Air Quality Forecast</string>
-    <string name="twenty_four_hour_psi_bracketed">(24hPSI)</string>
+    <string name="twenty_four_hour_psi">24hPSI</string>
 
     <string name="refresh">Refresh</string>
+    <string name="last_update_at">Last update at</string>
 </resources>

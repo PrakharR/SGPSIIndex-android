@@ -30,6 +30,7 @@ import com.google.android.material.tabs.TabLayout
 import java.util.concurrent.Executors
 import com.google.maps.android.ui.IconGenerator
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -123,7 +124,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val (_, regions, items) = response!!
         val item = items.first()
 
-        lastUpdateTextView.text = item.updateTimestamp
+        val df1 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
+        val date = df1.parse(item.updateTimestamp) ?: Date()
+
+        val lastUpdated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
+        val lastUpdatedText = getString(R.string.last_update_at) + " " + lastUpdated
+        lastUpdateTextView.text = lastUpdatedText
 
         updateNationalData(item)
         updateMarkers(regions, item, viewModel.dataType.value!!)
@@ -143,10 +149,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun updateNationalData(item: Item) {
-        val (psiDescriptor, psiColor) = Utility.descriptorInfo(this, item.readings["psi_twenty_four_hourly"]!!["national"]!!)
+        val psi = item.readings["psi_twenty_four_hourly"]!!["national"]!!
+        val (psiDescriptor, psiColor) = Utility.qualityDescriptorInfo(this, psi)
+        val advisoryDescriptor = Utility.advisoryDescriptorInfo(this, psi)
 
         nationalPsiTextView.text = psiDescriptor
         nationalPsiTextView.setTextColor(psiColor)
+
+        nationalHealthAdvisoryTextView.text = advisoryDescriptor
     }
 
     private fun updateMarkers(regions: List<Region>, item: Item, type: String) {
@@ -156,7 +166,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         for (region in regions) {
             val name = region.name
             val value = item.readings[type]!![name]!!
-            val (_, valueColor) = Utility.descriptorInfo(this, value)
+            val (_, valueColor) = Utility.qualityDescriptorInfo(this, value)
 
             if (name == Utility.PSI_NATIONAL) continue
 
@@ -178,7 +188,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             nameTextView.text = name
 
             iconGenerator.setContentView(view)
-            iconGenerator.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+            iconGenerator.setColor(ContextCompat.getColor(this, R.color.markerBackground))
 
             val latLng = LatLng(region.labelLocation["latitude"]!!, region.labelLocation["longitude"]!!)
             googleMap.addMarker(
@@ -195,7 +205,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        this.googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
         this.googleMap.uiSettings.isScrollGesturesEnabled = false
         this.googleMap.uiSettings.isZoomGesturesEnabled = false
         this.googleMap.uiSettings.isRotateGesturesEnabled = false

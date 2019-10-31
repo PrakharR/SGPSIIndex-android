@@ -5,6 +5,8 @@
     <color name="colorAccent">#FFFF43</color>
     <color name="textColor">#FFFFFF</color>
 
+    <color name="markerBackground">#CC000000</color>
+
     <color name="psiDescriptorGood">#00FF00</color>
     <color name="psiDescriptorModerate">#0065FF</color>
     <color name="psiDescriptorUnhealthy">#FFFF00</color>

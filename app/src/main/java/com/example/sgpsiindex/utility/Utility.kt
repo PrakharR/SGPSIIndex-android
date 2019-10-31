@@ -15,7 +15,7 @@ class Utility {
 
         const val DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
-        fun descriptorInfo(context: Context, psi: Double): Pair<String, Int> {
+        fun qualityDescriptorInfo(context: Context, psi: Double): Pair<String, Int> {
             return when {
                 psi in 0.0..50.0 -> Pair(context.getString(R.string.good), ContextCompat.getColor(context, R.color.psiDescriptorGood))
                 psi in 51.0..100.0 -> Pair(context.getString(R.string.moderate), ContextCompat.getColor(context, R.color.psiDescriptorModerate))
@@ -23,6 +23,17 @@ class Utility {
                 psi in 201.0..300.0 -> Pair(context.getString(R.string.very_unhealthy), ContextCompat.getColor(context, R.color.psiDescriptorVeryUnhealthy))
                 psi > 301.0 -> Pair(context.getString(R.string.hazardous), ContextCompat.getColor(context, R.color.psiDescriptorHazardous))
                 else -> Pair(context.getString(R.string.unknown), Color.WHITE)
+            }
+        }
+
+        fun advisoryDescriptorInfo(context: Context, psi: Double): String {
+            return when {
+                psi in 0.0..50.0 -> context.getString(R.string.normal)
+                psi in 51.0..100.0 -> context.getString(R.string.normal)
+                psi in 101.0..200.0 -> context.getString(R.string.reduce)
+                psi in 201.0..300.0 -> context.getString(R.string.avoid_prolonged)
+                psi > 301.0 -> context.getString(R.string.minimize)
+                else -> context.getString(R.string.unknown)
             }
         }
     }
